@@ -158,9 +158,12 @@ extension MailViewController: SwipeTableViewCellDelegate {
     }
     
     func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
+        let cell = tableView.cellForRow(at: indexPath) as! MailCell
         var options = SwipeTableOptions()
         options.expansionStyle = orientation == .left ? .selection : .destructive
         options.transitionStyle = defaultOptions.transitionStyle
+        options.buttonHeight = cell.contentView.frame.size.height - 10
+        options.topButtonSpacing = 5
         
         switch buttonStyle {
         case .backgroundColor:
