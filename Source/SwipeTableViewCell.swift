@@ -126,8 +126,9 @@ open class SwipeTableViewCell: UITableViewCell {
             
             if state == .center || state == .animatingToCenter {
                 let velocity = gesture.velocity(in: target)
-                let orientation: SwipeActionsOrientation = velocity.x > 0 ? .left : .right
-
+                //TODO: if enable both swipe orientation
+                //let orientation: SwipeActionsOrientation = velocity.x > 0 ? .left : .right
+                let orientation: SwipeActionsOrientation = .right
                 showActionsView(for: orientation)
             }
             
