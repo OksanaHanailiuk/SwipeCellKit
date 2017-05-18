@@ -74,6 +74,21 @@ public class SwipeAction: NSObject {
     /// - note: When set to `true`, the actions menu is automatically hidden when the action is selected. The default value is `false`.
     public var hidesWhenSelected = false
     
+    /// The corner radius of the action button.
+    ///
+    /// - note: If you do not specify a radius, radius doesn't add.
+    public var cornerRadius: CGFloat?
+    
+    /// The color of the action button.
+    ///
+    /// - note: If you do not specify a color, shadow doesn't add.
+    public var shadowColor: UIColor?
+    
+    /// The space between action buttons.
+    ///
+    /// - note: If you do not specify a space, space = 0.
+    public var spaceBetweenButtons: CGFloat?
+    
     /**
      Constructs a new `SwipeAction` instance.
 

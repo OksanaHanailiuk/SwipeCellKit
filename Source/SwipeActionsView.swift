@@ -94,8 +94,8 @@ class SwipeActionsView: UIView {
         
         clipsToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = options.backgroundColor ?? #colorLiteral(red: 0.862745098, green: 0.862745098, blue: 0.862745098, alpha: 1)
-        
+        //backgroundColor = options.backgroundColor ?? #colorLiteral(red: 0.862745098, green: 0.862745098, blue: 0.862745098, alpha: 1)
+        backgroundColor = UIColor.clear
         buttons = addButtons(for: self.actions, withMaximum: maxSize)
     }
     
@@ -119,7 +119,13 @@ class SwipeActionsView: UIView {
         buttons.enumerated().forEach { (index, button) in
             let action = actions[index]
             let frame = CGRect(origin: .zero, size: CGSize(width: bounds.width, height: bounds.height))
-            let wrapperView = SwipeActionButtonWrapperView(frame: frame, action: action, orientation: orientation, contentWidth: minimumButtonWidth)
+            
+            var space: CGFloat = 0
+            if let spaceBetweenButtons = action.spaceBetweenButtons {
+                space = spaceBetweenButtons
+            }
+            
+            let wrapperView = SwipeActionButtonWrapperView(frame: frame, action: action, orientation: orientation, contentWidth: minimumButtonWidth - space)
             wrapperView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
             wrapperView.addSubview(button)
             
@@ -132,6 +138,14 @@ class SwipeActionsView: UIView {
             } else {
                 addSubview(wrapperView)
             }
+            button.backgroundColor = action.backgroundColor ?? #colorLiteral(red: 0.862745098, green: 0.862745098, blue: 0.862745098, alpha: 1)
+            if let cornerRadius = action.cornerRadius {
+                button.layer.cornerRadius = cornerRadius
+            }
+            
+            if let shadowColor = action.shadowColor {
+                addShadow(button: button, shadowColor: shadowColor.cgColor)
+            }
             
             button.frame = wrapperView.contentRect
             button.maximumImageHeight = maximumImageHeight
@@ -142,6 +156,16 @@ class SwipeActionsView: UIView {
         return buttons
     }
     
+    func addShadow(button: UIButton, shadowColor: CGColor = UIColor.red.cgColor,
+                   shadowOffset: CGSize = .zero,
+                   shadowOpacity: Float = 0.5,
+                   shadowRadius: CGFloat = 5) {
+        layer.shadowColor = shadowColor
+        layer.shadowOffset = shadowOffset
+        layer.shadowOpacity = shadowOpacity
+        layer.shadowRadius = shadowRadius
+        layer.masksToBounds = false
+    }
     func actionTapped(button: SwipeActionButton) {
         guard let index = buttons.index(of: button) else { return }
 
@@ -242,7 +266,6 @@ class SwipeActionButtonWrapperView: UIView {
         }
         
         super.init(frame: frame)
-        
         configureBackgroundColor(with: action)
     }
     
@@ -250,7 +273,7 @@ class SwipeActionButtonWrapperView: UIView {
         guard action.hasBackgroundColor else { return }
         
         if let backgroundColor = action.backgroundColor {
-            self.backgroundColor = backgroundColor
+            self.backgroundColor = .clear
         } else {
             switch action.style {
             case .destructive:
