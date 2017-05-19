@@ -247,6 +247,11 @@ open class SwipeTableViewCell: UITableViewCell {
         
         addSubview(actionsView)
 
+        var leftSpacingCount: CGFloat = 0
+        if let leftSpacing = options.leftSpacing {
+            leftSpacingCount = leftSpacing
+        }
+        
         actionsView.heightAnchor.constraint(equalToConstant: options.buttonHeight!).isActive = true
         actionsView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 2).isActive = true
         actionsView.topAnchor.constraint(equalTo: topAnchor, constant: options.topButtonSpacing!).isActive = true
@@ -254,7 +259,7 @@ open class SwipeTableViewCell: UITableViewCell {
         if orientation == .left {
             actionsView.rightAnchor.constraint(equalTo: leftAnchor).isActive = true
         } else {
-            actionsView.leftAnchor.constraint(equalTo: rightAnchor).isActive = true
+            actionsView.leftAnchor.constraint(equalTo: rightAnchor, constant: leftSpacingCount).isActive = true
         }
         
         self.actionsView = actionsView

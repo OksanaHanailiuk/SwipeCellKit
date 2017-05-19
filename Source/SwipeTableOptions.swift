@@ -48,6 +48,9 @@ public struct SwipeTableOptions {
     /// The amount of space, in points, between the button and top cell base line.
     public var topButtonSpacing: CGFloat?
     
+    /// The amount of space, in points, between the button and left cell base line.
+    public var leftSpacing: CGFloat?
+    
     /// Constructs a new `SwipeTableOptions` instance with default options.
     public init() {}
 }
