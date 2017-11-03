@@ -114,7 +114,7 @@ open class SwipeTableViewCell: UITableViewCell {
         }
     }
     
-    func handlePan(gesture: UIPanGestureRecognizer) {
+    @objc func handlePan(gesture: UIPanGestureRecognizer) {
         guard isEditing == false else { return }
         guard let target = gesture.view else { return }
         
@@ -221,9 +221,6 @@ open class SwipeTableViewCell: UITableViewCell {
         let selectedIndexPaths = tableView.indexPathsForSelectedRows
         selectedIndexPaths?.forEach { tableView.deselectRow(at: $0, animated: false) }
         
-        // Temporarily remove table gestures
-        tableView.setGestureEnabled(false)
-        
         configureActionsView(with: actions, for: orientation)
         
         return true
@@ -325,11 +322,11 @@ open class SwipeTableViewCell: UITableViewCell {
         }
     }
 
-    func handleTap(gesture: UITapGestureRecognizer) {
+    @objc func handleTap(gesture: UITapGestureRecognizer) {
         hideSwipe(animated: true)
     }
     
-    func handleTablePan(gesture: UIPanGestureRecognizer) {
+    @objc func handleTablePan(gesture: UIPanGestureRecognizer) {
         if gesture.state == .began {
             hideSwipe(animated: true)
         }
@@ -340,7 +337,9 @@ open class SwipeTableViewCell: UITableViewCell {
     // `SwipeTableCell`.
     /// :nodoc:
     override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let point = convert(point, to: superview!)
+        guard let superview = superview else { return false }
+     
+        let point = convert(point, to: superview)
 
         if !UIAccessibilityIsVoiceOverRunning() {
             for cell in tableView?.swipeCells ?? [] {
@@ -396,9 +395,7 @@ extension SwipeTableViewCell {
 
     func reset() {
         state = .center
-        
-        tableView?.setGestureEnabled(true)
-        
+        clipsToBounds = false
         actionsView?.removeFromSuperview()
         actionsView = nil
     }
@@ -499,15 +496,14 @@ extension SwipeTableViewCell {
                 tableView?.hideSwipeCell()
             }
 
-            if let cells = tableView?.visibleCells as? [SwipeTableViewCell] {
-                let cell = cells.first(where: { $0.state.isActive })
-                return cell == nil ? false : true
-            }
+            let cell = tableView?.swipeCells.first(where: { $0.state.isActive })
+            return cell == nil ? false : true
         }
         
         if gestureRecognizer == panGestureRecognizer,
             let view = gestureRecognizer.view,
-            let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer
+        {
             let translation = gestureRecognizer.translation(in: view)
             return abs(translation.y) <= abs(translation.x)
         }

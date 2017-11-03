@@ -166,7 +166,8 @@ class SwipeActionsView: UIView {
         layer.shadowRadius = shadowRadius
         layer.masksToBounds = false
     }
-    func actionTapped(button: SwipeActionButton) {
+    
+    @objc func actionTapped(button: SwipeActionButton) {
         guard let index = buttons.index(of: button) else { return }
 
         delegate?.swipeActionsView(self, didSelect: actions[index])
@@ -215,7 +216,6 @@ class SwipeActionsView: UIView {
         DispatchQueue.main.async {
             oldWidths.enumerated().forEach { index, oldWidth in
                 let newWidth = newWidths[index]
-                
                 if oldWidth != newWidth {
                     let context = SwipeActionTransitioningContext(actionIdentifier: self.actions[index].identifier,
                                                              button: self.buttons[index],
